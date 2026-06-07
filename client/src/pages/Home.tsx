@@ -1,10 +1,48 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   ArrowRight, PlayCircle, Star, Award, CheckCircle2,
   TrendingUp, Users, ExternalLink, Quote, MessagesSquare,
   Target, Sparkles, Building2, ThumbsUp, Repeat, Zap, BarChart3,
   Trophy, Link2, Mail, Clock, FileCheck, Shield, Workflow,
 } from "lucide-react";
+
+function LiteYouTube({ id, title }: { id: string; title: string }) {
+  const [playing, setPlaying] = useState(false);
+  if (playing) {
+    return (
+      <iframe
+        src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
+        title={title}
+        className="absolute inset-0 w-full h-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => setPlaying(true)}
+      className="absolute inset-0 w-full h-full group cursor-pointer overflow-hidden"
+      aria-label={`Play ${title}`}
+    >
+      <img
+        src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; }}
+        alt={title}
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110" style={{ background: "#FE1C6A" }}>
+          <svg viewBox="0 0 24 24" className="w-7 h-7 text-white ml-1" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+    </button>
+  );
+}
 
 /* ---------- animation helpers ---------- */
 const fade = {
@@ -23,12 +61,12 @@ const CREAM = "#f0ece0";
 const HERO_VIDEO = "u_DmzoyY4U0"; // Perry Power — strongest named agent testimonial
 
 const VIDEOS = [
-  { id: "u_DmzoyY4U0", title: "Perry Power on The Depositary", agent: "Perry Power" },
-  { id: "iwmmBLn2pwI", title: "Byfield on The Depositary", agent: "Byfield" },
-  { id: "cIR7o-EhA5Y", title: "The Depositary × Reapit integration", agent: "Integration spotlight" },
-  { id: "NVyrCZ1EnfE", title: "Agent walk-through of The Depositary", agent: "Verified agent" },
-  { id: "xs8ANx-S3O4", title: "Agent testimonial — The Depositary", agent: "Verified agent" },
-  { id: "XIHk6fyRroM", title: "Agent testimonial — The Depositary", agent: "Verified agent" },
+  { id: "u_DmzoyY4U0", title: "The Depositary review", agent: "Perry Power", firm: "Power Bespoke" },
+  { id: "iwmmBLn2pwI", title: "Working with The Depositary", agent: "Byfield", firm: "Byfield letting agents" },
+  { id: "cIR7o-EhA5Y", title: "The Depositary × Reapit integration", agent: "Supplier spotlight", firm: "Reapit integration" },
+  { id: "NVyrCZ1EnfE", title: "Agent testimonial — The Depositary", agent: "Verified Kerfuffle agent", firm: "Independent testimonial" },
+  { id: "xs8ANx-S3O4", title: "Agent testimonial — The Depositary", agent: "Verified Kerfuffle agent", firm: "Independent testimonial" },
+  { id: "XIHk6fyRroM", title: "Kerfuffle agent testimonial — The Depositary", agent: "Verified Kerfuffle agent", firm: "Independent testimonial" },
 ];
 
 const KEY_STATS = [
@@ -200,16 +238,10 @@ export default function Home() {
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }}
                       className="relative">
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-              <iframe
-                src={`https://www.youtube.com/embed/${HERO_VIDEO}?rel=0&modestbranding=1`}
-                title="The Depositary — agent testimonial"
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <LiteYouTube id={HERO_VIDEO} title="Perry Power, Power Bespoke — on The Depositary" />
             </div>
             <div className="mt-3 flex items-center gap-2 text-xs opacity-70">
-              <PlayCircle className="h-4 w-4" /> Perry Power on working with The Depositary
+              <PlayCircle className="h-4 w-4" /> Perry Power, Power Bespoke — on working with The Depositary
             </div>
           </motion.div>
         </div>
@@ -359,17 +391,12 @@ export default function Home() {
               <motion.div key={i} variants={fade}
                           className="rounded-3xl overflow-hidden bg-white shadow-sm border border-black/5">
                 <div className="aspect-video relative">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1`}
-                    title={v.title}
-                    className="absolute inset-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <LiteYouTube id={v.id} title={`${v.agent} — ${v.title}`} />
                 </div>
                 <div className="p-5">
-                  <div className="text-xs font-semibold uppercase tracking-wider mb-1.5 opacity-60">{v.agent}</div>
-                  <div className="font-semibold leading-snug" style={{ fontFamily: "Fraunces, serif" }}>{v.title}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: PINK }}>{v.agent}</div>
+                  <div className="font-semibold leading-snug" style={{ fontFamily: "Fraunces, serif" }}>{v.firm}</div>
+                  <div className="text-sm opacity-70 mt-1.5">{v.title}</div>
                 </div>
               </motion.div>
             ))}
